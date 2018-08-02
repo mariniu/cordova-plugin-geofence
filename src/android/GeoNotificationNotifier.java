@@ -16,6 +16,8 @@ import android.util.Log;
 
 public class GeoNotificationNotifier {
 
+    protected static final int SMALL_NOTIFICATION_MAX_CHARACTER_LIMIT = 38;
+
     private static final String GENERIC_CHANNEL_ID = "geofencing";
     private static final String GENERIC_CHANNEL_NAME = "Geo";
     private static final int GENERIC_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
@@ -41,10 +43,15 @@ public class GeoNotificationNotifier {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, GENERIC_CHANNEL_ID)
             .setVibrate(notification.getVibrate())
             .setSmallIcon(notification.getSmallIcon())
-            .setLargeIcon(notification.getLargeIcon())
+            //.setLargeIcon(notification.getLargeIcon())
             .setAutoCancel(true)
             .setContentTitle(notification.getTitle())
             .setContentText(notification.getText());
+
+        // set style to large if message is longer than 38 characters
+        if (notification.getTitle() != null && notification.getTitle().length() > SMALL_NOTIFICATION_MAX_CHARACTER_LIMIT) {
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(notification.getTitle()));
+        }
 
         if (notification.openAppOnClick) {
             String packageName = context.getPackageName();
