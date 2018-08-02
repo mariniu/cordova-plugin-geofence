@@ -25,7 +25,7 @@ public class GoogleServiceCommandExecutor implements IGoogleServiceCommandListen
         if (command != null) {
             command.addListener(this);
             command.Execute();
-        ]
+        }
     }
 
     @Override
