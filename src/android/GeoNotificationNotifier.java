@@ -1,17 +1,26 @@
 package com.cowbell.cordova.geofence;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class GeoNotificationNotifier {
+
+    private static final String GENERIC_CHANNEL_ID = "geofencing";
+    private static final String GENERIC_CHANNEL_NAME = "Geo";
+    private static final int GENERIC_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
     private NotificationManager notificationManager;
     private Context context;
     private BeepHelper beepHelper;
@@ -26,7 +35,11 @@ public class GeoNotificationNotifier {
 
     public void notify(Notification notification) {
         notification.setContext(context);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+
+        // create notification channel if needed
+        createNotificationChannel();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, GENERIC_CHANNEL_ID)
             .setVibrate(notification.getVibrate())
             .setSmallIcon(notification.getSmallIcon())
             .setLargeIcon(notification.getLargeIcon())
@@ -59,5 +72,27 @@ public class GeoNotificationNotifier {
         }
         notificationManager.notify(notification.id, mBuilder.build());
         logger.log(Log.DEBUG, notification.toString());
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // create channel
+            NotificationChannel channel = new NotificationChannel(GENERIC_CHANNEL_ID, GENERIC_CHANNEL_NAME, GENERIC_CHANNEL_IMPORTANCE);
+            // Sets whether notifications posted to this channel should display notification lights
+            channel.enableLights(true);
+            // Sets whether notification posted to this channel should vibrate.
+            channel.enableVibration(true);
+            // Sets the notification light color for notifications posted to this channel
+            channel.setLightColor(Color.GREEN);
+            // Sets whether notifications posted to this channel appear on the lockscreen or not
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
