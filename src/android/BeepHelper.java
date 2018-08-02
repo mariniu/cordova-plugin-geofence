@@ -3,11 +3,17 @@ package com.cowbell.cordova.geofence;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 
+import java.lang.Exception;
+
 public class BeepHelper {
     private ToneGenerator toneGenerator;
 
     public BeepHelper() {
-        toneGenerator = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+        try {
+            toneGenerator = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+        } catch (Exception e) {
+            // do nothing
+        }
     }
 
     /**
@@ -16,6 +22,10 @@ public class BeepHelper {
      * @param name
      */
     public void startTone(String name) {
+        if (toneGenerator == null) {
+            return;
+        }
+
         int tone = 0;
         int duration = 1000;
 
