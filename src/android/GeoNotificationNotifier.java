@@ -1,6 +1,5 @@
 package com.cowbell.cordova.geofence;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -87,7 +86,7 @@ public class GeoNotificationNotifier {
             // Sets the notification light color for notifications posted to this channel
             channel.setLightColor(Color.GREEN);
             // Sets whether notifications posted to this channel appear on the lockscreen or not
-            channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            channel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PRIVATE);
 
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
