@@ -1460,6 +1460,8 @@ public struct SwiftData {
                     for i: Int32 in 0 ..< columnCount {
                     //for var i: Int32 = 0; i < columnCount; ++i {
                         let columnName = String(validatingUTF8: sqlite3_column_name(pStmt, i))
+
+                        // https://github.com/cowbell/cordova-plugin-geofence/pull/224/commits/283d4741168609381e4e8c94aceec78faf00ab31
                         var columnType = ""
                         switch sqlite3_column_type(pStmt, i) {
                         case 1:
@@ -1475,9 +1477,10 @@ public struct SwiftData {
                         default:
                             columnType = "NULL"
                         }
-                        if let columnValue: AnyObject = getColumnValue(pStmt, index: i, type: columnType) {
-                            row[columnName] = SDColumn(obj: columnValue)
+                        if let columnValue: AnyObject = getColumnValue(statement: pStmt!, index: i, type: columnType) {
+                            row[columnName!] = SDColumn(obj: columnValue)
                         }
+
                     }
                     resultSet.append(row)
                 } else if status == SQLITE_DONE {
